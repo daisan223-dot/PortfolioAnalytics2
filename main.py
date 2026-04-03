@@ -423,8 +423,8 @@ async def upload_csv(file: UploadFile = File(...)):
                     mval_n = float(mval_str.replace(",",""))
                     pl     = mval_n - acq_n
                     pl_str = f"{int(pl):+,}" if pl == int(pl) else f"{pl:+,.0f}"
-                    rr     = (mval_n / acq_n * 100) if acq_n != 0 else None
-                    rr_str = f"{rr:.2f}%" if rr is not None else "-"
+                    rr     = (mval_n / acq_n - 1) * 100 if acq_n != 0 else None
+                    rr_str = f"{rr:+.2f}%" if rr is not None else "-"
                 except:
                     pl_str = "-"
                     rr_str = "-"
