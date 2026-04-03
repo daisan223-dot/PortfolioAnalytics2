@@ -91,7 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function parseNumeric(val) {
         if (!val || val === "-" || val === "不明" || val === "取得中" || val === "エラー") return -Infinity;
-        const num = parseFloat(String(val).replace(/[^0-9.\-]/g, ''));
+        // 数字、ドット、マイナス、プラス以外をすべて除去
+        const num = parseFloat(String(val).replace(/[^0-9.\-+]/g, ''));
         return isNaN(num) ? -Infinity : num;
     }
 
@@ -196,12 +197,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // 評価損益・騰落率の色クラス
                 // 評価損益: プラス=赤、マイナス=緑
-                // 騰落率: 100%以上(利益)=赤、100%未満(損失)=緑
-                const plNum = parseShares(stock.profit_loss ? stock.profit_loss.replace(/,/g,'') : null);
-                const rrNum = stock.return_rate && stock.return_rate !== '-' 
-                    ? parseFloat(stock.return_rate.replace('%','')) : null;
-                const plClass = plNum !== null ? (plNum >= 0 ? 'profit-positive' : 'profit-negative') : '';
-                const rrClass = rrNum !== null ? (rrNum >= 100 ? 'profit-positive' : 'profit-negative') : '';
+                // 騰落率: 0%以上(利益)=赤、0%未満(損失)=緑
+                const plNum = parseNumeric(stock.profit_loss);
+                const rrNum = parseNumeric(stock.return_rate);
+                const plClass = plNum !== -Infinity ? (plNum >= 0 ? 'profit-positive' : 'profit-negative') : '';
+                const rrClass = rrNum !== -Infinity ? (rrNum >= 0 ? 'profit-positive' : 'profit-negative') : '';
 
                 tr.innerHTML = `
                     <td><strong>${stock.code}</strong></td>
