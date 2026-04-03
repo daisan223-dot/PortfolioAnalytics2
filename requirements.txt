@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pandas
+yfinance
+curl_cffi
+python-multipart
+yahooquery
+lxml
+beautifulsoup4

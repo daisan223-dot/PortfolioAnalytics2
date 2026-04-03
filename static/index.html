@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Analytics Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                <h1>Portfolio Analytics</h1>
+            </div>
+            <p>Upload your SBI Securities CSV to get instant PER, PBR, and Dividend Yield insights.</p>
+        </header>
+
+        <main>
+            <div class="upload-area" id="drop-zone">
+                <div class="upload-content">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <h3>Drag & Drop your CSV file here</h3>
+                    <p>or</p>
+                    <label class="btn-primary" for="file-input">Browse File</label>
+                    <input type="file" id="file-input" accept=".csv" style="display: none;">
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading-state hidden" id="loading-state">
+                <div class="spinner"></div>
+                <p>Analyzing portfolio data... This may take a moment based on number of assets.</p>
+                <div class="progress-bar"><div class="progress-fill"></div></div>
+            </div>
+
+            <!-- Results Data Table -->
+            <div class="results-container hidden" id="results-container">
+                <div class="card result-card">
+                    <div class="card-header">
+                        <h2>Analytics Results <span id="fetch-progress" class="fetch-progress"></span></h2>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <select id="shares-filter" class="filter-select" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #e2e8f0; font-family: inherit;">
+                                <option value="all">すべて表示 (保有株数)</option>
+                                <option value="lt100">100株未満</option>
+                                <option value="gte100">100株以上</option>
+                            </select>
+                            <select id="decision-filter" class="filter-select" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #e2e8f0; font-family: inherit;">
+                                <option value="all">すべて表示 (投資判断)</option>
+                                <option value="保持">保持のみ</option>
+                                <option value="要検討">要検討のみ</option>
+                                <option value="優待？">優待？のみ</option>
+                            </select>
+                            <select id="yuutai-filter" class="filter-select" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #e2e8f0; font-family: inherit;">
+                                <option value="all">すべて表示 (株主優待)</option>
+                                <option value="有り">有りのみ</option>
+                                <option value="無し">無しのみ</option>
+                                <option value="対象外">対象外のみ</option>
+                            </select>
+                            <button class="btn-secondary" id="reset-btn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                                New Upload
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table id="results-table">
+                            <thead>
+                                <tr>
+                                    <th data-sort="code" class="sortable">銘柄コード <span class="sort-icon"></span></th>
+                                    <th data-sort="name" class="sortable">銘柄名 <span class="sort-icon"></span></th>
+                                    <th data-sort="per" class="sortable">PER <span class="sort-icon"></span></th>
+                                    <th data-sort="pbr" class="sortable">PBR <span class="sort-icon"></span></th>
+                                    <th data-sort="dividend_yield" class="sortable">配当利回り <span class="sort-icon"></span></th>
+                                    <th data-sort="decision" class="sortable">投資判断 <span class="sort-icon"></span></th>
+                                    <th data-sort="shares" class="sortable">保有株数 <span class="sort-icon"></span></th>
+                                    <th data-sort="cost_price" class="sortable">取得単価 <span class="sort-icon"></span></th>
+                                    <th data-sort="current_price" class="sortable">現在値 <span class="sort-icon"></span></th>
+                                    <th data-sort="acquisition_cost" class="sortable">取得金額 <span class="sort-icon"></span></th>
+                                    <th data-sort="market_value" class="sortable">評価額 <span class="sort-icon"></span></th>
+                                    <th data-sort="profit_loss" class="sortable">評価損益 <span class="sort-icon"></span></th>
+                                    <th data-sort="return_rate" class="sortable">騰落率 <span class="sort-icon"></span></th>
+                                    <th data-sort="yuutai" class="sortable">株主優待 <span class="sort-icon"></span></th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="results-body">
+                                <!-- Data injected via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+</html>
