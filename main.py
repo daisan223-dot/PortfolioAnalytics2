@@ -1,4 +1,5 @@
 import asyncio
+import os
 import io
 import time
 import concurrent.futures
@@ -455,3 +456,9 @@ async def fetch_stock_api(code: str, name: str = ""):
     loop = asyncio.get_event_loop()
     result = await loop.run_in_executor(_executor, fetch_single_stock, code, name or str(code))
     return result
+
+if __name__ == "__main__":
+    import os
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
